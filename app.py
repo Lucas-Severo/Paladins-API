@@ -38,5 +38,14 @@ def getStatus(player):
                             {devId}/{signature}/{session}/{timestamp}/{player}")
     return jsonify(response.json())
 
+# returns all occurrences of a nickname (case insensitive)
+@app.route("/searchplayers/<player>")
+def searchPlayer(player):
+    session = getSession()
+    signature, timestamp = getSignature("searchplayers")
+    response = requests.get(f"http://api.paladins.com/paladinsapi.svc/searchplayersjson/\
+                            {devId}/{signature}/{session}/{timestamp}/{player}")
+    return jsonify(response.json())
+
 if __name__ == "__main__":
     app.run()
