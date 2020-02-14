@@ -7,19 +7,34 @@ app = Flask(__name__)
 devId = ""
 sessionId = ""
 
+def getSession():
+    return generateCredentials(devId, sessionId, "createsession").generate_session()
+
+# return the signature and timestamp
+def getSignature(method):
+    return generateCredentials(devId, sessionId, method).generate_signature()
+
 @app.route("/getplayer/<player>")
 def getPlayer(player):
-    session = generateCredentials(devId, sessionId, "createsession").generate_session()
-    signature, timestamp = generateCredentials(devId, sessionId, "getplayer").generate_signature()
+    session = getSession()
+    signature, timestamp = getSignature("getplayer")
     response = requests.get(f"http://api.paladins.com/paladinsapi.svc/getplayerjson/\
                             {devId}/{signature}/{session}/{timestamp}/{player}")
     return jsonify(response.json())
 
 @app.route("/getchampions/<player>")
 def getChampion(player):
-    session = generateCredentials(devId, sessionId, "createsession").generate_session()
-    signature, timestamp = generateCredentials(devId, sessionId, "getchampionranks").generate_signature()
+    session = getSession()
+    signature, timestamp = getSignature("getchampionranks")
     response = requests.get(f"http://api.paladins.com/paladinsapi.svc/getchampionranksjson/\
+                            {devId}/{signature}/{session}/{timestamp}/{player}")
+    return jsonify(response.json())
+
+@app.route("/getstatus/<player>")
+def getStatus(player):
+    session = getSession()
+    signature, timestamp = getSignature("getplayerstatus")
+    response = requests.get(f"http://api.paladins.com/paladinsapi.svc/getplayerstatusjson/\
                             {devId}/{signature}/{session}/{timestamp}/{player}")
     return jsonify(response.json())
 
