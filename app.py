@@ -47,5 +47,13 @@ def searchPlayer(player):
                             {devId}/{signature}/{session}/{timestamp}/{player}")
     return jsonify(response.json())
 
+@app.route("/getmatches/<player>")
+def getMatches(player):
+    session = getSession()
+    signature, timestamp = getSignature("getmatchhistory")
+    response = requests.get(f"http://api.paladins.com/paladinsapi.svc/getmatchhistoryjson/\
+                            {devId}/{signature}/{session}/{timestamp}/{player}")
+    return jsonify(response.json())
+
 if __name__ == "__main__":
     app.run()
